@@ -1,0 +1,6 @@
+{
+  "extends": "@anycli/tslint",
+  "rules": {
+    "no-console": false
+  }
+}
