@@ -123,9 +123,11 @@ export function ls(filepaths: string | string[]) {
  * copy files with fs.copy
  * can copy directories
  */
+// TODO: this should overwrite existing files
+// TODO: right now you can't write from a file to an existing directory and just have it keep that name
 export function cp(files: string | string[], destinationpaths: string | string[], options = {}) {
   const destination = path.join(..._.castArray(destinationpaths))
-  for (let f of files) {
+  for (let f of _.castArray(files)) {
     log('cp', f, destination)
     fs.copySync(f, destination, options)
   }
@@ -166,6 +168,18 @@ export function home() {
   const home = os.homedir()
   log('home', home)
   return home
+}
+
+export function download(url: string, filepath: string | string[]) {
+  filepath = path.join(..._.castArray(filepath))
+  log('download', url, filepath)
+  return x('curl', ['-fsSLo', filepath, url])
+}
+
+export function chmod(filepath: string | string[], mode: number) {
+  filepath = path.join(..._.castArray(filepath))
+  log('chmod', filepath, mode)
+  return fs.chmodSync(filepath, mode)
 }
 
 /**

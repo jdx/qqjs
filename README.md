@@ -1,7 +1,7 @@
 qqjs
 ====
 
-A bunch of wrappers for various utilites. Ideal for writing shell scripts in node. Everything here runs in synchronous mode for ease of use.
+A bunch of wrappers for various utilites. Ideal for writing shell scripts in node. Almost everything here runs in synchronous mode for ease of use.
 
 [![Version](https://img.shields.io/npm/v/qqjs.svg)](https://npmjs.org/package/qqjs)
 [![CircleCI](https://circleci.com/gh/jdxcode/qqjs/tree/master.svg?style=svg)](https://circleci.com/gh/jdxcode/qqjs/tree/master)
@@ -62,12 +62,12 @@ Status
 - [x] cwd
 - [x] file exists
 - [x] homedir
+- [x] chmod
+- [x] download files
 - [ ] ln
 - [ ] is file/directory/symlink/etc
-- [ ] chmod
 - [ ] batch rename
 - [ ] sed
-- [ ] download files
 - [ ] upload files
 - [ ] aws s3
 - [ ] resolve-from
