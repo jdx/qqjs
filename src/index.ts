@@ -123,14 +123,17 @@ export function ls(filepaths: string | string[]) {
  * copy files with fs.copy
  * can copy directories
  */
-// TODO: this should overwrite existing files
-// TODO: right now you can't write from a file to an existing directory and just have it keep that name
-export function cp(files: string | string[], destinationpaths: string | string[], options = {}) {
-  const destination = path.join(..._.castArray(destinationpaths))
-  for (let f of _.castArray(files)) {
-    log('cp', f, destination)
-    fs.copySync(f, destination, options)
+export function cp(source: string | string[], destinationpaths: string | string[], options = {}) {
+  source = path.join(..._.castArray(source))
+  let dest = path.join(..._.castArray(destinationpaths))
+  try {
+    if (fs.statSync(dest).isDirectory()) dest = path.join(dest, path.basename(source))
+    if (fs.statSync(dest).isFile()) rm(dest)
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err
   }
+  log('cp', source, dest)
+  fs.copySync(source, dest, options)
 }
 
 /**
@@ -147,6 +150,12 @@ export function rm(...filesArray: (string | string[])[]) {
 export function mv(source: string | string[], dest: string | string[]) {
   source = path.join(..._.castArray(source))
   dest = path.join(..._.castArray(dest))
+  try {
+    if (fs.statSync(dest).isDirectory()) dest = path.join(dest, path.basename(source))
+    if (fs.statSync(dest).isFile()) rm(dest)
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err
+  }
   log('mv', source, dest)
   fs.moveSync(source, dest)
 }
