@@ -1,7 +1,7 @@
 {
   "name": "qqjs",
   "description": "useful functions for writing node scripts",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Jeff Dickey @jdxcode",
   "bugs": "https://github.com/jdxcode/qqjs/issues",
   "dependencies": {
