@@ -1,7 +1,7 @@
 qqjs
 ====
 
-A bunch of wrappers for various utilites. Ideal for writing shell scripts in node. Almost everything here runs in synchronous mode for ease of use.
+A bunch of wrappers for various utilites. Ideal for writing shell scripts in node.
 
 [![Version](https://img.shields.io/npm/v/qqjs.svg)](https://npmjs.org/package/qqjs)
 [![CircleCI](https://circleci.com/gh/jdxcode/qqjs/tree/master.svg?style=svg)](https://circleci.com/gh/jdxcode/qqjs/tree/master)
@@ -20,26 +20,31 @@ It's best to [look at the code](src/index.ts) to see what all is available, but 
 ```js
 const qq = require('qqjs')
 
-// silent mode, otherwise it logs out every command
-// qq.config.silent = true
+// qq.run(fn) is just fn().catch(qq.handleError)
+// this helps skip a couple of steps when running async functions in scripts
+qq.run(async () => {
+  // turn silent mode to log all commands
+  // can also see output with DEBUG=qq
+  // qq.config.silent = false
 
-// run a command with qq.x this runs synchronously using execa
-// by default it will echo out to the screen the commmand, stdout/stderr and connect to stdin
-// can send either a string
-qq.x('git --version')
+  // run a command with qq.x this runs synchronously using execa
+  // by default it will echo out to the screen the commmand, stdout/stderr and connect to stdin
+  // can send either a string
+  await qq.x('git --version')
 
-// or specify the arguments
-qq.x('git' ['--version'])
+  // or specify the arguments
+  await qq.x('git' ['--version'])
 
-qq.cd('newdir')
+  await qq.cd('newdir')
 
-qq.cp('from', 'to')
+  await qq.cp('from', 'to')
 
-const pjson = qq.readJSON('package.json')
-qq.writeJSON('package.json', {})
+  const pjson = await qq.readJSON('package.json')
+  await qq.writeJSON('package.json', {})
 
-// for almost any command, if it takes a string you can also pass an array and it will automatically path.join()
-qq.writeJSON(['mydir', 'package.json'], {})
+  // for almost any command, if it takes a string you can also pass an array and it will automatically path.join()
+  await qq.writeJSON(['mydir', 'package.json'], {})
+})
 ```
 
 Status
@@ -64,6 +69,7 @@ Status
 - [x] homedir
 - [x] chmod
 - [x] download files
+- [x] emptyDir
 - [ ] ln
 - [ ] is file/directory/symlink/etc
 - [ ] batch rename
