@@ -13,7 +13,7 @@ import {log} from './log'
 export const home = os.homedir()
 export {path}
 
-export const join = (filepath: string | string[]) => path.join(..._.castArray(filepath))
+export const join = (filepath?: string | string[]) => path.join(..._.castArray(filepath || process.cwd()))
 
 /**
  * reads a json file in using load-json-file
