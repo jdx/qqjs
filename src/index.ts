@@ -6,6 +6,7 @@ import * as loadJSONFile from 'load-json-file'
 import * as _ from 'lodash'
 import * as os from 'os'
 import * as path from 'path'
+import * as tmp from 'tmp'
 import * as writeJSONFile from 'write-json-file'
 
 export const config = {
@@ -199,3 +200,13 @@ export {path}
  * easy access to process.env
  */
 export const env = process.env
+
+/**
+ * create a new temporary directory
+ * uses tmp
+ */
+export function tmpDir(): string {
+  const output = tmp.dirSync()
+  log('tmpDir', output.name)
+  return output.name
+}

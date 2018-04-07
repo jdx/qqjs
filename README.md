@@ -73,7 +73,8 @@ Status
 - [ ] resolve-from
 - [ ] open-editor
 - [ ] hasha
-- [ ] temp files/dirs
+- [x] temp dirs
+- [ ] temp files
 - [ ] git stuff?
 - [ ] find-up
 - [ ] read-pkg
