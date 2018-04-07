@@ -198,6 +198,15 @@ export async function exists(filepath: string | string[]) {
   return exists
 }
 
+export namespace exists {
+  export function sync(filepath: string | string[]) {
+    filepath = join(filepath)
+    const exists = fs.pathExistsSync(filepath)
+    log('exists.sync', filepath, exists)
+    return exists
+  }
+}
+
 export function cwd() {
   const cwd = process.cwd()
   log('cwd', cwd)
