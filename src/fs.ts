@@ -110,7 +110,7 @@ export function popd() {
  */
 export async function ls(filepaths?: string | string[], options: {fullpath?: boolean} = {}) {
   const filepath = join(filepaths)
-  log('ls', filepath)
+  // log('ls', filepath)
   const files = await fs.readdir(filepath)
   if (options.fullpath) return files.map(f => join([filepath, f]))
   else return files
