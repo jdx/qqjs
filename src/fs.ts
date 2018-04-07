@@ -1,3 +1,4 @@
+import * as crypto from 'crypto'
 import * as fs from 'fs-extra'
 import * as Glob from 'glob'
 import * as _globby from 'globby'
@@ -233,4 +234,16 @@ export function emptyDir(filepath: string | string[]) {
   filepath = join(filepath)
   log('emptyDir', filepath)
   return fs.emptyDir(filepath)
+}
+
+export async function hash(algo: string, fp: string | string[]) {
+  const f = join(fp)
+  log('hash', algo, f)
+  return new Promise<string>((resolve, reject) => {
+    const hash = crypto.createHash(algo)
+    const stream = fs.createReadStream(f)
+    stream.on('error', err => reject(err))
+    stream.on('data', chunk => hash.update(chunk))
+    stream.on('end', () => resolve(hash.digest('hex')))
+  })
 }
