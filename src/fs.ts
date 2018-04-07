@@ -108,10 +108,12 @@ export function popd() {
 /**
  * list files in directory
  */
-export function ls(filepaths: string | string[]) {
+export async function ls(filepaths?: string | string[], options: {fullpath?: boolean} = {}) {
   const filepath = join(filepaths)
   log('ls', filepath)
-  return fs.readdir(filepath)
+  const files = await fs.readdir(filepath)
+  if (options.fullpath) return files.map(f => join([filepath, f]))
+  else return files
 }
 
 export async function fileType(fp: string | string[]): Promise<'file' | 'directory' | 'symlink' | undefined> {
