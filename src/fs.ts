@@ -45,10 +45,12 @@ export async function mkdirp(...filepaths: (string | string[])[]) {
     await fs.mkdirp(f)
   }
 }
-export function mkdirpSync(...filepaths: (string | string[])[]) {
-  for (let f of filepaths.map(join)) {
-    log('mkdirpSync', f)
-    fs.mkdirpSync(f)
+export namespace mkdirp {
+  export function sync(...filepaths: (string | string[])[]) {
+    for (let f of filepaths.map(join)) {
+      log('mkdirpSync', f)
+      fs.mkdirpSync(f)
+    }
   }
 }
 
