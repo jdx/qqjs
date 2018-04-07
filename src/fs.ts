@@ -32,7 +32,7 @@ export function readJSON(filepaths: string | string[]) {
 export function writeJSON(filepaths: string | string[], data: any, options: writeJSONFile.Options = {}) {
   const filepath = join(filepaths)
   log('writeJSON', filepath)
-  return writeJSONFile(filepath, data, options)
+  return writeJSONFile(filepath, data, {indent: '  ', ...options})
 }
 
 /**
@@ -112,6 +112,18 @@ export function ls(filepaths: string | string[]) {
   return fs.readdir(filepath)
 }
 
+export async function fileType(fp: string | string[]): Promise<'file' | 'directory' | 'symlink' | undefined> {
+  try {
+    const stats = await fs.stat(join(fp))
+    if (stats.isSymbolicLink()) return 'symlink'
+    if (stats.isDirectory()) return 'directory'
+    if (stats.isFile()) return 'file'
+  } catch (err) {
+    if (err.code === 'ENOENT') return
+    throw err
+  }
+}
+
 /**
  * copy files with fs.copy
  * can copy directories
@@ -119,15 +131,15 @@ export function ls(filepaths: string | string[]) {
 export async function cp(source: string | string[], destinationpaths: string | string[], options = {}) {
   source = join(source)
   let dest = join(destinationpaths)
-  try {
-    const stats = await fs.stat(dest)
-    if (stats.isDirectory()) dest = path.join(dest, path.basename(source))
-    if (stats.isFile()) rm(dest)
-  } catch (err) {
-    if (err.code !== 'ENOENT') throw err
+  switch (await fileType(dest)) {
+    case 'directory':
+      dest = path.join(dest, path.basename(source))
+      break
+      case 'file':
+      await rm(dest)
   }
   log('cp', source, dest)
-  fs.copy(source, dest, options)
+  return fs.copy(source, dest, options)
 }
 
 /**
@@ -141,22 +153,35 @@ export async function rm(...filesArray: (string | string[])[]) {
 }
 
 export async function rmIfEmpty(...filesArray: (string | string[])[]) {
+  const rmdir = async (f: string) => {
+    let removedSomething = false
+    const getFiles = async () => (await ls(f)).map(s => join([f, s]))
+    let files = await getFiles()
+    for (let subdir of files) {
+      if ((await fileType(subdir)) === 'directory') {
+        await rmdir(subdir)
+        removedSomething = true
+      }
+    }
+    // check files again if we removed any
+    if (removedSomething) files = await getFiles()
+    if (files.length === 0) await rm(f)
+  }
   for (let f of filesArray.map(join)) {
     log('rmIfEmpty', f)
-    const files = await ls(f)
-    if (files.length === 0) await fs.remove(f)
+    await rmdir(f)
   }
 }
 
 export async function mv(source: string | string[], dest: string | string[]) {
   source = join(source)
   dest = join(dest)
-  try {
-    const stats = await fs.stat(dest)
-    if (stats.isDirectory()) dest = path.join(dest, path.basename(source))
-    if (stats.isFile()) rm(dest)
-  } catch (err) {
-    if (err.code !== 'ENOENT') throw err
+  switch (await fileType(dest)) {
+    case 'directory':
+      dest = path.join(dest, path.basename(source))
+      break
+    case 'file':
+      rm(dest)
   }
   log('mv', source, dest)
   return fs.move(source, dest)
