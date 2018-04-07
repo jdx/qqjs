@@ -13,9 +13,19 @@ export const config = {
   silent: false
 }
 
+const homeRegexp = new RegExp(os.homedir(), 'g')
+const curRegexp = new RegExp(process.cwd(), 'g')
+
 function log(...args: any[]) {
+  const home = os.homedir()
   if (config.silent) return
-  const output = args.join(' ')
+  const output = args
+  .map(a => a
+    .replace(curRegexp, '.')
+    .replace(homeRegexp, '~'))
+  .join(' ')
+  console.dir(home)
+  console.dir(args)
   console.log(`$ ${output}`)
 }
 
