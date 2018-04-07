@@ -216,7 +216,7 @@ export function cwd() {
 
 export function chmod(filepath: string | string[], mode: number) {
   filepath = join(filepath)
-  log('chmod', filepath, mode)
+  log('chmod', filepath, mode.toString(8))
   return fs.chmod(filepath, mode)
 }
 
