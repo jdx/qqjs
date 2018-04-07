@@ -85,4 +85,4 @@ Status
 - [ ] find-up
 - [ ] read-pkg
 - [ ] which
-- [ ] pushd/popd
+- [x] pushd/popd

@@ -45,6 +45,12 @@ export async function mkdirp(...filepaths: (string | string[])[]) {
     await fs.mkdirp(f)
   }
 }
+export function mkdirpSync(...filepaths: (string | string[])[]) {
+  for (let f of filepaths.map(join)) {
+    log('mkdirpSync', f)
+    fs.mkdirpSync(f)
+  }
+}
 
 /**
  * glob matcher (find files)
@@ -80,6 +86,21 @@ export function cd(filepaths: string | string[]) {
   const filepath = join(filepaths)
   log('cd', filepath)
   return process.chdir(filepath)
+}
+
+const origPath = process.cwd()
+const pushdPaths: string[] = []
+export function pushd(filepaths: string | string[]) {
+  const f = join(filepaths)
+  log('pushd', f)
+  pushdPaths.push(process.cwd())
+  return process.chdir(f)
+}
+
+export function popd() {
+  const f = pushdPaths.pop() || origPath
+  log('popd', f)
+  return process.chdir(f)
 }
 
 /**
@@ -119,6 +140,14 @@ export async function rm(...filesArray: (string | string[])[]) {
   }
 }
 
+export async function rmIfEmpty(...filesArray: (string | string[])[]) {
+  for (let f of filesArray.map(join)) {
+    log('rmIfEmpty', f)
+    const files = await ls(f)
+    if (files.length === 0) await fs.remove(f)
+  }
+}
+
 export async function mv(source: string | string[], dest: string | string[]) {
   source = join(source)
   dest = join(dest)
@@ -130,7 +159,7 @@ export async function mv(source: string | string[], dest: string | string[]) {
     if (err.code !== 'ENOENT') throw err
   }
   log('mv', source, dest)
-  fs.move(source, dest)
+  return fs.move(source, dest)
 }
 
 export async function exists(filepath: string | string[]) {
