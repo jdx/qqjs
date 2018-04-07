@@ -30,4 +30,9 @@ export namespace x {
     log('$', cmd)
     return execa.shell(cmd, options)
   }
+  export function stdout(cmd: string, args: string[] = [], options: execa.Options = {}) {
+    options = {stdio: [0, 'pipe', 2], ...options}
+    log('$', cmd)
+    return execa.stdout(cmd, args, options)
+  }
 }
