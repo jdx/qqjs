@@ -181,7 +181,7 @@ export async function mv(source: string | string[], dest: string | string[]) {
       dest = path.join(dest, path.basename(source))
       break
     case 'file':
-      rm(dest)
+      await rm(dest)
   }
   log('mv', source, dest)
   return fs.move(source, dest)
