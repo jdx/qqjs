@@ -32,7 +32,7 @@ export namespace x {
   }
   export function stdout(cmd: string, args: string[] = [], options: execa.Options = {}) {
     options = {stdio: [0, 'pipe', 2], ...options}
-    log('$', cmd)
+    log('$', cmd, ...args)
     return execa.stdout(cmd, args, options)
   }
 }
