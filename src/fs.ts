@@ -12,7 +12,26 @@ import {log} from './log'
 export const home = os.homedir()
 export {path}
 
-export const join = (filepath?: string | string[]) => path.join(..._.castArray(filepath || process.cwd()))
+/**
+ * easier to use version of path.join()
+ * runs _.flattenDeep() on the arguments so you can pass things in like join(['foo', 'bar']) or join('foo', 'bar')
+ * it can even take in complicated things like join('foo', ['bar', 'baz'], ['bak', ['baf', 'whoa']])
+ * the point of this is to make it so all the different qqjs tools can take in arrays as arguments to be joined
+ * defaults to process.cwd()
+ */
+export function join(filepath?: string | string[]): string
+export function join(...filepath: string[]): string
+export function join(...filepath: (string | string[] | undefined)[]): string {
+  // tslint:disable-next-line strict-type-predicates
+  if (typeof filepath[1] === 'number' && Array.isArray(filepath[2])) {
+    // this is being called with .map()
+    filepath = [filepath[0]]
+  }
+  if (!filepath.length) return process.cwd()
+  console.dir(filepath)
+  console.dir(_.flattenDeep(filepath))
+  return path.join(..._.flattenDeep(filepath) as string[])
+}
 
 /**
  * creates a directory if it does not exist
