@@ -28,8 +28,6 @@ export function join(...filepath: (string | string[] | undefined)[]): string {
     filepath = [filepath[0]]
   }
   if (!filepath.length) return process.cwd()
-  console.dir(filepath)
-  console.dir(_.flattenDeep(filepath))
   return path.join(..._.flattenDeep(filepath) as string[])
 }
 
