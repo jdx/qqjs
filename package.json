@@ -11,6 +11,7 @@
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",
     "globby": "^8.0.1",
+    "http-call": "^5.1.0",
     "load-json-file": "^4.0.0",
     "lodash": "^4.17.5",
     "pkg-dir": "^2.0.0",

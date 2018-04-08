@@ -2,39 +2,17 @@ import * as crypto from 'crypto'
 import * as fs from 'fs-extra'
 import * as Glob from 'glob'
 import * as _globby from 'globby'
-import * as loadJSONFile from 'load-json-file'
 import * as _ from 'lodash'
 import * as os from 'os'
 import * as path from 'path'
 import * as tmp from 'tmp'
 import {promisify} from 'util'
-import * as writeJSONFile from 'write-json-file'
 
 import {log} from './log'
 export const home = os.homedir()
 export {path}
 
 export const join = (filepath?: string | string[]) => path.join(..._.castArray(filepath || process.cwd()))
-
-/**
- * reads a json file in using load-json-file
- * this will automatically join the paths if you pass multiple strings with path.join()
- */
-export function readJSON(filepaths: string | string[]) {
-  const filepath = join(filepaths)
-  log('readJSON', filepath)
-  return loadJSONFile(filepath)
-}
-
-/**
- * writes a json file with write-json-file
- * this will automatically join the paths if you pass an array of strings
- */
-export function writeJSON(filepaths: string | string[], data: any, options: writeJSONFile.Options = {}) {
-  const filepath = join(filepaths)
-  log('writeJSON', filepath)
-  return writeJSONFile(filepath, data, {indent: '  ', ...options})
-}
 
 /**
  * creates a directory if it does not exist
