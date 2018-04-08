@@ -1,7 +1,7 @@
 import * as execa from 'execa'
 import * as _ from 'lodash'
 
-import {log} from './log'
+import {debug, log} from './log'
 
 /**
  * easy access to process.env
@@ -35,7 +35,7 @@ export namespace x {
     options = {stdio: [0, 'pipe', 2], ...options}
     log('$', cmd, ...args)
     const stream = execa(cmd, args, options).stdout
-    stream.pipe(process.stdout)
+    if (debug.enabled) stream.pipe(process.stdout)
     const stdout = await getStream(stream)
     return stdout.replace(/\n$/, '')
   }
