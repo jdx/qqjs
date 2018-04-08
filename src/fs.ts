@@ -208,9 +208,10 @@ export async function tmpDir(): Promise<string> {
   return output.name
 }
 
-export function emptyDir(filepath: string | string[]) {
+export async function emptyDir(filepath: string | string[]) {
   filepath = join(filepath)
   log('emptyDir', filepath)
+  await fs.mkdirp(path.dirname(filepath))
   return fs.emptyDir(filepath)
 }
 
