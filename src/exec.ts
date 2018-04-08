@@ -30,9 +30,13 @@ export namespace x {
     log('$', cmd)
     return execa.shell(cmd, options)
   }
-  export function stdout(cmd: string, args: string[] = [], options: execa.Options = {}) {
+  export async function stdout(cmd: string, args: string[] = [], options: execa.Options = {}): Promise<string> {
+    const getStream = require('get-stream')
     options = {stdio: [0, 'pipe', 2], ...options}
     log('$', cmd, ...args)
-    return execa.stdout(cmd, args, options)
+    const stream = execa(cmd, args, options).stdout
+    stream.pipe(process.stdout)
+    const stdout = await getStream(stream)
+    return stdout.replace(/\n$/, '')
   }
 }
