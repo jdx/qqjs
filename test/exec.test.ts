@@ -18,4 +18,13 @@ describe('x', () => {
       expect(err.code).to.equal('ENOENT')
     }
   })
+
+  it('fails on process erorr', async () => {
+    try {
+      await qq.x.stdout('git', ['lwkejflkewjf'])
+      throw new Error('uh oh')
+    } catch (err) {
+      expect(err.code).to.equal(1)
+    }
+  })
 })

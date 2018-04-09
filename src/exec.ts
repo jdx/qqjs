@@ -42,8 +42,11 @@ export namespace x {
     return new Promise<string>((resolve, reject) => {
       ps.on('error', reject)
       if (debug.enabled) ps.stdout.pipe(process.stdout)
-      getStream(ps.stdout)
-      .then((stdout: string) => resolve(stdout.replace(/\n$/, '')))
+      Promise.all([
+        getStream(ps.stdout).then((o: string) => o.replace(/\n$/, '')),
+        ps,
+      ])
+      .then(([stdout]) => resolve(stdout))
       .catch(reject)
     })
   }
