@@ -1,34 +1,18 @@
 import * as crypto from 'crypto'
 import * as fs from 'fs-extra'
 import * as Glob from 'glob'
-import * as _globby from 'globby'
-import * as _ from 'lodash'
-import * as os from 'os'
+import * as Globby from 'globby'
 import * as path from 'path'
-import * as tmp from 'tmp'
+import * as Tmp from 'tmp'
 import {promisify} from 'util'
 
 import {log} from './log'
-export const home = os.homedir()
-export {path}
+import {join} from './path'
 
-/**
- * easier to use version of path.join()
- * runs _.flattenDeep() on the arguments so you can pass things in like join(['foo', 'bar']) or join('foo', 'bar')
- * it can even take in complicated things like join('foo', ['bar', 'baz'], ['bak', ['baf', 'whoa']])
- * the point of this is to make it so all the different qqjs tools can take in arrays as arguments to be joined
- * defaults to process.cwd()
- */
-export function join(filepath?: string | string[]): string
-export function join(...filepath: string[]): string
-export function join(...filepath: (string | string[] | undefined)[]): string {
-  // tslint:disable-next-line strict-type-predicates
-  if (typeof filepath[1] === 'number' && Array.isArray(filepath[2])) {
-    // this is being called with .map()
-    filepath = [filepath[0]]
-  }
-  if (!filepath.length) return process.cwd()
-  return path.join(..._.flattenDeep(filepath) as string[])
+const deps = {
+  m: {} as any,
+  get tmp(): typeof Tmp { return this.m.tmp = this.m.globby || require('tmp') },
+  get globby(): typeof Globby { return this.m.globby = this.m.globby || require('globby') },
 }
 
 /**
@@ -55,7 +39,7 @@ export namespace mkdirp {
  */
 export function globby(patterns: string | string[], options: Glob.IOptions = {}) {
   log('globby', ...patterns)
-  return _globby(patterns, options)
+  return deps.globby(patterns, options)
 }
 
 /**
@@ -75,30 +59,6 @@ export function read(filepaths: string | string[], options = {}) {
   const filepath = join(filepaths)
   log('read', filepath)
   return fs.readFile(filepath, options)
-}
-
-/**
- * cd into a directory
- */
-export function cd(filepaths: string | string[]) {
-  const filepath = join(filepaths)
-  log('cd', filepath)
-  return process.chdir(filepath)
-}
-
-const origPath = process.cwd()
-const pushdPaths: string[] = []
-export function pushd(filepaths: string | string[]) {
-  const f = join(filepaths)
-  log('pushd', f)
-  pushdPaths.push(process.cwd())
-  return process.chdir(f)
-}
-
-export function popd() {
-  const f = pushdPaths.pop() || origPath
-  log('popd', f)
-  return process.chdir(f)
 }
 
 /**
@@ -203,12 +163,6 @@ export namespace exists {
   }
 }
 
-export function cwd() {
-  const cwd = process.cwd()
-  log('cwd', cwd)
-  return cwd
-}
-
 export function chmod(filepath: string | string[], mode: number) {
   filepath = join(filepath)
   log('chmod', filepath, mode.toString(8))
@@ -220,7 +174,7 @@ export function chmod(filepath: string | string[], mode: number) {
  * uses tmp
  */
 export async function tmpDir(): Promise<string> {
-  const output = await (promisify(tmp.dir) as any)()
+  const output = await (promisify(deps.tmp.dir) as any)()
   log('tmpDir', output.name)
   return output.name
 }
