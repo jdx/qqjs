@@ -38,9 +38,13 @@ export namespace x {
     const getStream = require('get-stream')
     options = {stdio: [0, 'pipe', 2], ...options}
     log('$', cmd, ...args)
-    const stream = m.execa(cmd, args, options).stdout
-    if (debug.enabled) stream.pipe(process.stdout)
-    const stdout = await getStream(stream)
-    return stdout.replace(/\n$/, '')
+    const ps = m.execa(cmd, args, options)
+    return new Promise<string>((resolve, reject) => {
+      ps.on('error', reject)
+      if (debug.enabled) ps.stdout.pipe(process.stdout)
+      getStream(ps.stdout)
+      .then((stdout: string) => resolve(stdout.replace(/\n$/, '')))
+      .catch(reject)
+    })
   }
 }
