@@ -7,7 +7,7 @@ export const debug = require('debug')('qq')
 
 const m = {
   m: {} as any,
-  get chalk(): typeof Chalk { return this.m = this.m || require('chalk') },
+  get chalk(): typeof Chalk { return this.m.chalk = this.m.chalk || require('chalk') },
 }
 
 const homeRegexp = new RegExp(`\\B${os.homedir().replace('/', '\\/')}`, 'g')

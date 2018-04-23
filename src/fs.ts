@@ -9,6 +9,8 @@ import {promisify} from 'util'
 import {log} from './log'
 import {join} from './path'
 
+export type Filepath = string | string[]
+
 const deps = {
   m: {} as any,
   get tmp(): typeof Tmp { return this.m.tmp = this.m.globby || require('tmp') },
@@ -167,6 +169,13 @@ export function chmod(filepath: string | string[], mode: number) {
   filepath = join(filepath)
   log('chmod', filepath, mode.toString(8))
   return fs.chmod(filepath, mode)
+}
+
+export function ln(from: Filepath, to: Filepath) {
+  from = join(from)
+  to = join(to)
+  log('ln', from, to)
+  return fs.link(from, to)
 }
 
 /**
