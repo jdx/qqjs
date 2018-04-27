@@ -20,4 +20,4 @@ export function log(...args: any[]) {
   console.log(`${m.chalk.gray('qq')} ${output}`)
 }
 
-export const prettifyPaths = (input: string) => input.toString().replace(curRegexp, '.').replace(homeRegexp, '~')
+export const prettifyPaths = (input: string) => (input || '').toString().replace(curRegexp, '.').replace(homeRegexp, '~')

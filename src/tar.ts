@@ -16,7 +16,7 @@ export const tar = {
       return new Promise((resolve, reject) => {
         deps.tar
         .pack(_from, options)
-        .pipe(fs.createReadStream(_to))
+        .pipe(fs.createWriteStream(_to))
         .on('error', reject)
         .on('finish', resolve)
       })
