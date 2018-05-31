@@ -60,7 +60,7 @@ export function write(filepaths: string | string[], data: any, options = {}) {
 export function read(filepaths: string | string[], options = {}) {
   const filepath = join(filepaths)
   log('read', filepath)
-  return fs.readFile(filepath, options)
+  return fs.readFile(filepath, {encoding: 'utf8', ...options})
 }
 
 /**
