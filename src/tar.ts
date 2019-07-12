@@ -15,10 +15,10 @@ export const tar = {
       const _to = join(to)
       return new Promise((resolve, reject) => {
         deps.tar
-        .pack(_from, options)
-        .pipe(fs.createWriteStream(_to))
-        .on('error', reject)
-        .on('finish', resolve)
+          .pack(_from, options)
+          .pipe(fs.createWriteStream(_to))
+          .on('error', reject)
+          .on('finish', resolve)
       })
     }
   }

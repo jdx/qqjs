@@ -1,6 +1,5 @@
 import * as crypto from 'crypto'
 import * as fs from 'fs-extra'
-import * as Glob from 'glob'
 import * as Globby from 'globby'
 import * as path from 'path'
 import * as Tmp from 'tmp'
@@ -39,7 +38,7 @@ export namespace mkdirp {
 /**
  * glob matcher (find files)
  */
-export function globby(patterns: string | string[], options: Glob.IOptions = {}) {
+export function globby(patterns: string | string[], options: Globby.GlobbyOptions = {}) {
   log('globby', ...patterns)
   return deps.globby(patterns, options)
 }
@@ -94,11 +93,11 @@ export async function cp(source: string | string[], destinationpaths: string | s
   source = join(source)
   let dest = join(destinationpaths)
   switch (await fileType(dest)) {
-    case 'directory':
-      dest = path.join(dest, path.basename(source))
-      break
-      case 'file':
-      await rm(dest)
+  case 'directory':
+    dest = path.join(dest, path.basename(source))
+    break
+  case 'file':
+    await rm(dest)
   }
   log('cp', source, dest)
   return fs.copy(source, dest, options)
@@ -139,11 +138,11 @@ export async function mv(source: string | string[], dest: string | string[]) {
   source = join(source)
   dest = join(dest)
   switch (await fileType(dest)) {
-    case 'directory':
-      dest = path.join(dest, path.basename(source))
-      break
-    case 'file':
-      await rm(dest)
+  case 'directory':
+    dest = path.join(dest, path.basename(source))
+    break
+  case 'file':
+    await rm(dest)
   }
   log('mv', source, dest)
   return fs.move(source, dest)

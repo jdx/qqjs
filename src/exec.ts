@@ -41,13 +41,13 @@ export namespace x {
     const ps = m.execa(cmd, args, options)
     return new Promise<string>((resolve, reject) => {
       ps.on('error', reject)
-      if (debug.enabled) ps.stdout.pipe(process.stdout)
+      if (debug.enabled && ps.stdout) ps.stdout.pipe(process.stdout)
       Promise.all([
         getStream(ps.stdout).then((o: string) => o.replace(/\n$/, '')),
         ps,
       ])
-      .then(([stdout]) => resolve(stdout))
-      .catch(reject)
+        .then(([stdout]) => resolve(stdout))
+        .catch(reject)
     })
   }
 }
